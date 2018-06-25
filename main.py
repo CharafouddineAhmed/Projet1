@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # coding=utf8
 
-import sys, os, json
+import sys, os, json, requests
 
 FILE = ""
 
@@ -27,9 +27,9 @@ try:
         data['9'] = donnee[9]
 
         # Creation du fichier json json_data
-        json_data = json.dumps(data)
+        json_data = json.dumps(data, indent=4, sort_keys=True)
 
-        #affichage du data jjson
+        #affichage du data json
         print json_data
 
 except Exception, message:
