@@ -18,7 +18,8 @@ NB : N'oublies pas la petite config au fichier (config.yml)
 Installation
 ------------
 
-sudo chmod 777 main.py \n
-python ./main.c
+  sudo chmod 777 main.py 
+
+  python ./main.c
 
 
