@@ -1,50 +1,68 @@
 #!/usr/bin/python
 # coding=utf8
 
-import sys, os, json, requests, yaml
+import sys, os, json, yaml, datetime, time
 from datetime import datetime
 from elasticsearch import Elasticsearch
 
+# DATE
+ts = time.time()
+time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
-i = 1
+compteur = 1
 try:
 
+    #ouverture du fichier config
     with open("config.yml", 'r') as fichier_yml:
         cfg = yaml.load(fichier_yml)
 
-    es = Elasticsearch("%s:%s/"%(cfg['elastic']['host'],cfg['elastic']['port']))
-    #print "INFO : ", json.dumps(es.info(), indent=4, sort_keys=True)
+    #Connexion avec Elasticsearch
+    es = Elasticsearch("%s:%s/"%(cfg['elastic']['host'],cfg['elastic']['port']), verify_certs=True)
+    if not es.ping():
+        raise ValueError("Connexion refusé avec Elasticseaarch")
+    else :
+        print "Connexion établie avec Elasticsearch"
+        print "INFO : ", json.dumps(es.info(), indent=4, sort_keys=True)
 
-    #Lecture de fichier
-    fichier = open("%s"%(cfg['autre']['path']), "r")
 
-    for line in fichier:
-        donnee = line.split(" ")
-        data = {
-            '0' : donnee[0],
-            '1' : donnee[1],
-            '2' : donnee[2],
-            '3' : donnee[3],
-            '4' : donnee[4],
-            '5' : donnee[5],
-            '6' : donnee[6],
-            '7' : donnee[7],
-            '8' : donnee[8],
-            '9' : donnee[9],
-        }
 
-        #res = es.index(index="test", doc_type="tweet", id = i, body=data)
-        #print(res['result'])
-        i = i + 1
+    #Lecture des données dans les logs
+    for path, dirs, files in os.walk("%s"%(cfg['autre']['path'])):
+        #Pour chaque fichier du repertoire, faire :
+        for filename in files :
 
-        #affichage du data json
-        #print json.dumps(data, indent=4, sort_keys=True)
+            fichier = open("%s/%s"%(cfg['autre']['path'],filename), "r")
+            for line in fichier:
+                donnee = line.split(" ")
+                data = {
+                    'date' : time,
+                    'file' : "%s"%(filename),
+                    'formatLog' : "table space",
+                    'name' : donnee[0],
+                    'mbytes' : float(donnee[1]),
+                    'used' : float(donnee[2]),
+                    'free' : float(donnee[3]),
+                    'pct_used' : float(donnee[4]),
+                    'largest' : float(donnee[5]),
+                    'max_sixe' : float(donnee[6]),
+                    'pct_max-used' : float(donnee[7]),
+                    'extent_man' : donnee[8],
+                    'segmen' : donnee[9],
+                }
 
-    fichier.close()
+                # Creattion d'index et ajout des donnéees.
+                res = es.index(index=("%s"%cfg['index']['name']), doc_type=("%s"%cfg['index']['document_type']), id = compteur, body=data)
+                print(res['result'])
+                compteur = compteur + 1
+
+                #affichage du data json
+                print json.dumps(data, indent=4, sort_keys=True)
+
 
 except Exception, message:
     print "Erreur : ", message
     sys.exit(1)
+
 
 print "PROGRAMME TERMINE"
 #pip install pyyaml

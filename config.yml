@@ -3,4 +3,8 @@ elastic:
     port: 9200
 
 autre:
-    path: exemple.log
+    path: /home/ahmed/Bureau/ELK  - ETA/Projet1/logs
+
+index :
+    name: eta-index
+    document_type: tablespace
