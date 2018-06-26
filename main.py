@@ -1,18 +1,23 @@
 #!/usr/bin/python
 # coding=utf8
 
-import sys, os, json, requests
-
+import sys, os, json, requests, yaml
 from datetime import datetime
 from elasticsearch import Elasticsearch
-es = Elasticsearch()
 
-# lecture du fichier et affichage en json
+
+i = 1
 try:
 
+    with open("config.yml", 'r') as fichier_yml:
+        cfg = yaml.load(fichier_yml)
+
+    es = Elasticsearch("%s:%s/"%(cfg['elastic']['host'],cfg['elastic']['port']))
+    #print "INFO : ", json.dumps(es.info(), indent=4, sort_keys=True)
+
     #Lecture de fichier
-    fichier = open("exemple.log", "r")
-    i = 1
+    fichier = open("%s"%(cfg['autre']['path']), "r")
+
     for line in fichier:
         donnee = line.split(" ")
         data = {
@@ -28,14 +33,18 @@ try:
             '9' : donnee[9],
         }
 
-        res = es.index(index="test-index-2", doc_type='tweet', id = i, body=data)
-        print(res['result'])
+        #res = es.index(index="test", doc_type="tweet", id = i, body=data)
+        #print(res['result'])
         i = i + 1
-        # Creation du fichier json json_data
-        json_data = json.dumps(data, indent=4, sort_keys=True)
 
         #affichage du data json
-        print json_data
+        #print json.dumps(data, indent=4, sort_keys=True)
+
+    fichier.close()
 
 except Exception, message:
-    print "Erreur d'ouverture du fichier"
+    print "Erreur : ", message
+    sys.exit(1)
+
+print "PROGRAMME TERMINE"
+#pip install pyyaml
