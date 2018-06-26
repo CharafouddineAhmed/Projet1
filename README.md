@@ -6,13 +6,14 @@ Client Elasticsearch en python. Ce programme permet d'indexer données de fichei
 Dependance
 -------------
 
-1. 
-En fonction de votre verison d'Elasticsearch : 
-Exemple (Elasticsearch V 6.X) 
-    pip install elasticsearch6
+ 
+1.  En fonction de votre verison d'Elasticsearch :  
+    Exemple (Elasticsearch V 6.X) 
+        pip install elasticsearch6
 
-2. 
+2.  pip install pyyaml
 
+NB : N'oublies pas la petite config au fichier (config.yml) 
 
 Installation
 ------------
