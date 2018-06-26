@@ -1,14 +1,11 @@
 #!/usr/bin/python
 # coding=utf8
 
-import sys, os, json, yaml, time
+import sys, os, json, yaml, time,  logging
 
 from datetime import datetime
 from elasticsearch import Elasticsearch
-
-# DATE
-#ts = time.time()
-#time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+import logging
 
 compteur = 1
 try:
@@ -20,13 +17,9 @@ try:
     #Connexion avec Elasticsearch
     es = Elasticsearch("%s:%s/"%(cfg['elastic']['host'],cfg['elastic']['port']), verify_certs=True)
     if not es.ping():
-        print "ERROR : ", json.dumps(es.info(), indent=4, sort_keys=True)
-        raise ValueError("Connexion refusé avec Elasticseaarch")
-    else :
-        print "Connexion établie avec Elasticsearch"
-        print "INFO : ", json.dumps(es.info(), indent=4, sort_keys=True)
+        raise ValueError("Conneion avec Elasticsearch (http://%s:%s)  refusée "%(cfg['elastic']['host'],cfg['elastic']['port'] ))
 
-
+    #res = es.indices.create(index=("%s"%cfg['index']['name']), ignore=400)
 
     #Lecture des données dans les logs
     for path, dirs, files in os.walk("%s"%(cfg['autre']['path'])):
@@ -39,7 +32,7 @@ try:
                 data = {
                     "timestamp": datetime.now(),
                     'file' : "%s"%(filename),
-                    'formatLog' : "table space",
+                    'formatLog' : "table_space",
                     'name' : donnee[0],
                     'mbytes' : float(donnee[1]),
                     'used' : float(donnee[2]),
@@ -53,18 +46,19 @@ try:
                 }
 
                 # Creattion d'index et ajout des donnéees.
-                res = es.indices.create(index=("%s"%cfg['index']['name']), ignore=400)
+
                 res = es.index(index=("%s"%cfg['index']['name']), doc_type=("%s"%cfg['index']['document_type']), id = compteur, body=data)
-                print(res['result'])
+
+                t = datetime.now()
+                print ( '%s %s'%(t,res['result']))
                 compteur = compteur + 1
 
                 #affichage du data json
                 #print json.dumps(data, indent=4, sort_keys=True)
-                
-except Exception, message:
-    print "Erreur : ", message
-    sys.exit(1)
 
+except Exception, message:
+    print "Erreur : " ,message
+    sys.exit(1)
 
 print "PROGRAMME TERMINE"
 #pip install pyyaml
