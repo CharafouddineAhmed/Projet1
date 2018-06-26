@@ -6,6 +6,15 @@ Client Elasticsearch en python. Ce programme permet d'indexer données de fichei
 Dependance
 -------------
 
+.
+├── config.yml           Configuration minimale à faire
+├── logs
+│   ├── TABLESPACE_h1a1sd211m_NETIKA_20180612-2357.log
+│   ├──  ..... 
+│   └── TABLESPACE_h1a1sd211m_NETIKA_20180614-1152.log
+├── main.py
+└── README.md
+
  
 1.  En fonction de votre verison d'Elasticsearch :  
     Exemple (Elasticsearch V 6.X) 
