@@ -1,4 +1,4 @@
-Python Elasticsearch Client
+Projet 1 : Indexation des données dans ES (Script python ) 
 ---------------------------
 
 Client Elasticsearch en python. Ce programme permet d'indexer données de ficheirs logs (/logs/*.log) dans la base Elasticsearch.  
