@@ -6,5 +6,5 @@ autre:
     path: /home/ahmed/Bureau/ELK  - ETA/Projet1/logs
 
 index :
-    name: eta-index
-    document_type: tablespace
+    name: table_space
+    document_type: _doc

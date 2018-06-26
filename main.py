@@ -1,13 +1,14 @@
 #!/usr/bin/python
 # coding=utf8
 
-import sys, os, json, yaml, datetime, time
+import sys, os, json, yaml, time
+
 from datetime import datetime
 from elasticsearch import Elasticsearch
 
 # DATE
-ts = time.time()
-time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+#ts = time.time()
+#time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
 compteur = 1
 try:
@@ -19,6 +20,7 @@ try:
     #Connexion avec Elasticsearch
     es = Elasticsearch("%s:%s/"%(cfg['elastic']['host'],cfg['elastic']['port']), verify_certs=True)
     if not es.ping():
+        print "ERROR : ", json.dumps(es.info(), indent=4, sort_keys=True)
         raise ValueError("Connexion refusé avec Elasticseaarch")
     else :
         print "Connexion établie avec Elasticsearch"
@@ -35,7 +37,7 @@ try:
             for line in fichier:
                 donnee = line.split(" ")
                 data = {
-                    'date' : time,
+                    "timestamp": datetime.now(),
                     'file' : "%s"%(filename),
                     'formatLog' : "table space",
                     'name' : donnee[0],
@@ -51,14 +53,14 @@ try:
                 }
 
                 # Creattion d'index et ajout des donnéees.
+                res = es.indices.create(index=("%s"%cfg['index']['name']), ignore=400)
                 res = es.index(index=("%s"%cfg['index']['name']), doc_type=("%s"%cfg['index']['document_type']), id = compteur, body=data)
                 print(res['result'])
                 compteur = compteur + 1
 
                 #affichage du data json
-                print json.dumps(data, indent=4, sort_keys=True)
-
-
+                #print json.dumps(data, indent=4, sort_keys=True)
+                
 except Exception, message:
     print "Erreur : ", message
     sys.exit(1)
