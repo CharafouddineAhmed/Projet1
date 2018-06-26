@@ -7,7 +7,7 @@ Dependance
 -------------
 
 .
-├── config.yml           Configuration minimale à faire
+├── config.yml           
 ├── logs
 │   ├── TABLESPACE_h1a1sd211m_NETIKA_20180612-2357.log
 │   ├──  ..... 
@@ -15,9 +15,15 @@ Dependance
 ├── main.py
 └── README.md
 
+Config.yml : Configuration minimale à faire
+Logs       : Repertoire source des logs
+main.py    : Programme 
+
+
  
 1.  En fonction de votre verison d'Elasticsearch :  
-    Exemple (Elasticsearch V 6.X) 
+    Exemple (Elasticsearch V 6.X)
+ 
         pip install elasticsearch6
 
 2.  pip install pyyaml
