@@ -8,15 +8,10 @@ Dependance
 
 .
 ├── config.yml           Configuration minimale à faire
-
 ├── logs
-
 │   ├── TABLESPACE_h1a1sd211m_NETIKA_20180612-2357.log
-
 │   ├──  ..... 
-
 │   └── TABLESPACE_h1a1sd211m_NETIKA_20180614-1152.log
-
 ├── main.py
 └── README.md
 
