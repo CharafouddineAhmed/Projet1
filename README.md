@@ -19,6 +19,7 @@ Installation
 ------------
 
   sudo chmod 777 main.py 
+  
   python ./main.c
 
 
